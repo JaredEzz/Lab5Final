@@ -13,13 +13,16 @@ class Rule
 private:
     Predicate head;
     vector<Predicate> predList;
+    int ruleNumber;
 
 public:
     void setHead(Predicate);
     void addPredicate(Predicate);
+    void setRuleNumber(int);
     void cleanRule();
     Predicate getHead() const { return head; }
     vector<Predicate> getPredList() const { return predList; }
+    int getRuleNumber() const { return ruleNumber; }
     string toString();
 };
 

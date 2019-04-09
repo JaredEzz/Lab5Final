@@ -11,6 +11,12 @@ void Rule::setHead(Predicate p)
     head = p;
 }
 
+void Rule::setRuleNumber(int rn)
+{
+    ruleNumber = rn;
+}
+
+
 void Rule::addPredicate(Predicate p)
 {
     predList.push_back(p);

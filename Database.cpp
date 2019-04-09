@@ -32,6 +32,7 @@ Database::Database(char* arg1, char* arg2) : p(arg1, arg2)
     buildDependancyGraph();
     dependancyGraph.toString(out);
     //out << endl << "Query Evaluation" << endl << endl;
+    cout << endl << "Rule Evaluation" << endl;
     evaluateQueries();
     out.close();
 }
@@ -214,12 +215,14 @@ void Database::evaluateRules()
     vector<Parameter> paramList;
     vector<string> schemeAttrs;
     string value;
+    int ruleNumber;
 
     for (unsigned int i = 0; i < rulesToEval.size(); i++)
     {
         head = rulesToEval.at(i).getHead().getIdentity();
         headParams = rulesToEval.at(i).getHead().getParameterList();
         predList = rulesToEval.at(i).getPredList();
+        ruleNumber = rulesToEval.at(i).getRuleNumber();
 
         for (unsigned int j = 0; j < predList.size(); j++)
         {
@@ -254,9 +257,10 @@ void Database::evaluateRules()
 
         if (rels.count(r.getName()))
         {
-            cout << "SCC: " << "R" << i << endl;
-            cout << rulesToEval.at(i).toString() << endl;
+            cout << "SCC: " << "R" << ruleNumber << endl;
+            cout << rulesToEval.at(i).toString() << "." << endl;
             rels.at(r.getName()).relationUnion(r, out);
+            //TODO implement passes
         }
 
         variables.clear();
@@ -275,6 +279,7 @@ void Database::getRulesToEvaluate()
         if (x.second.getName().at(0) == 'R')
         {
             int num = x.second.getNumber();
+            rules.at(num).setRuleNumber(num);
             rulesToEval.push_back(rules.at(num));
         }
     }
@@ -290,7 +295,7 @@ void Database::evaluateQueries()
         getRulesToEvaluate();
         //dependancyGraph.outputRuleEvaluationOrder(out);
         //dependancyGraph.outputBackEdges(out);
-        cout << endl << "Rule Evaluation" << endl;
+//        cout << endl << "Rule Evaluation" << endl;
 
         if (dependancyGraph.isCyclic())
         {
@@ -305,13 +310,22 @@ void Database::evaluateQueries()
             evaluateRules();
         }
 
-        cout << endl;
-        cout << "Query Evaluation" << endl;
-        evalQuery(queries.at(i));
+//        cout << endl;
+//        cout << "Query Evaluation" << endl;
+//        evalQuery(queries.at(i));
         dependancyGraph.clearNodes();
         rulesToEval.clear();
         size = -1;
     }
+
+    cout << endl << "Query Evaluation" << endl;
+
+    for (unsigned int i = 0; i < queries.size(); i++)
+    {
+//        cout << "Query Evaluation" << endl;
+        evalQuery(queries.at(i));
+    }
+
 }
 
 void Database::toString()
